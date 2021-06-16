@@ -46,7 +46,7 @@ public class DepartementDao {
     /**
      * Methode pour fermer les ressources d'accès à la database
      */
-    private void closeDBAccess(){
+    public void closeDBAccess(){
         try {
             if (connection!=null)
                 connection.close(); // Indispensable pour certaines BDD. Exemple : Oracle
@@ -104,7 +104,7 @@ public class DepartementDao {
                 int idRegion = cursor.getInt("ID_REGION");
                 return new Departement(id, codeRegion, idRegion);
             } else {
-                System.err.println("Aucun département portant ce code dans la base de données");
+                System.out.println("Aucun département portant ce code dans la base de données");
                 return null;
             }
         } catch (SQLException e){
@@ -123,14 +123,14 @@ public class DepartementDao {
         try {
             if (extractByCode(dpt.getCode())==null){
                 //connectToDB(); // je faits la connexion à la base ici car l'extractByName ci dessus ferme la connection une fois qu'il a fini
-                prepStatement = connection.prepareStatement("INSERT INTO departement (CODE, POPULATION, ID_REGION) values (?, ?, ?);");
+                prepStatement = connection.prepareStatement("INSERT INTO departement (CODE,  ID_REGION) values (?, ?);");
                 prepStatement.setString(1, dpt.getCode());
-                prepStatement.setInt(3, dpt.getIdRegion());
+                prepStatement.setInt(2, dpt.getIdRegion());
                 int res = prepStatement.executeUpdate();
 
             }
             else{
-                System.err.println("Erreur : ce département existe déja dans la base de données");
+                System.out.println("Warning : ce département existe déja dans la base de données");
             }
 
         }catch (SQLException e) {

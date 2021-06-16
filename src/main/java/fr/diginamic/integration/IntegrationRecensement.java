@@ -27,6 +27,7 @@ public class IntegrationRecensement {
         }
 
         daoRegion.closeDBAccess();
+        daoDepartement.closeDBAccess();
     }
 
     /**
@@ -54,7 +55,7 @@ public class IntegrationRecensement {
      * A partir d'une ligne du fichier recensement, insère les données adéquates en base
      * @param line
      */
-    private static void insertEntry(String line, RegionDao daoRegion, DepartementDao daoDpt, VilleDao daoVille){
+    private static void insertEntry(String line, RegionDao daoRegion, DepartementDao daoDepartement, VilleDao daoVille){
         // 1- Parsing de la ligne
         String[] morceaux = line.split(";");
         String codeRegion = morceaux[0];
@@ -65,24 +66,18 @@ public class IntegrationRecensement {
         String population = morceaux[7];
         int populationTotale = Integer.parseInt(population.replace(" ", "").trim());
 
-        // 2- On instancie les classes DAO
-        /*RegionDao daoRegion = new RegionDao();
-        DepartementDao daoDepartement = new DepartementDao();
-        VilleDao daoVille = new VilleDao();
-         */
-
-        // 3- Insertion dans la table region
+        // 1- Insertion dans la table region
         Region region = new Region(0, codeRegion, nomRegion);
         daoRegion.insert(region); // la methode insert vérifie déja si la region n'existe pas déja en base avant de l'insérer
         Region regionBase = daoRegion.extractByName(nomRegion);
 
-        /*
-        // 4- Insertion dans la table departement
+        // 2- Insertion dans la table departement
         Departement departement = new Departement(0, codeDepartement, regionBase.getId());
         daoDepartement.insert(departement);
         Departement departementBase = daoDepartement.extractByCode(codeDepartement); // permet de récupérer une Région avec l'id de la base (qui est auto-incrémenté)
 
-        // 5- Insertion dans la table ville
+        /*
+        // 3- Insertion dans la table ville
         Ville ville = new Ville(0, codeCommune, nomCommune, populationTotale, departementBase.getId(), regionBase.getId());
         daoVille.insert(ville);
 
