@@ -17,6 +17,10 @@ public class VilleDao {
     PreparedStatement prepStatement = null;
     ResultSet cursor = null;
 
+    public VilleDao() {
+        connectToDB();
+    }
+
     /**
      * Methode qui établit une connection avec la database
      */
@@ -43,7 +47,7 @@ public class VilleDao {
     /**
      * Methode pour fermer les ressources d'accès à la database
      */
-    private void closeDBAccess(){
+    public void closeDBAccess(){
         try {
             if (connection!=null)
                 connection.close(); // Indispensable pour certaines BDD. Exemple : Oracle
@@ -63,7 +67,7 @@ public class VilleDao {
      */
     public List<Ville> extract(){
         List<Ville> villeList = new ArrayList<>();
-        connectToDB();
+        //connectToDB();
         try {
             prepStatement = connection.prepareStatement("SELECT * FROM ville");
             cursor = prepStatement.executeQuery();
@@ -85,7 +89,7 @@ public class VilleDao {
             System.err.println("Erreur : impossible de recupérer la liste des villes");
             return null;
         } finally {
-            closeDBAccess();
+            //closeDBAccess();
         }
     }
 
@@ -95,7 +99,7 @@ public class VilleDao {
      * @return
      */
     public Ville extractByName(String name){
-        connectToDB();
+        //connectToDB();
         try {
             prepStatement = connection.prepareStatement("SELECT * FROM region WHERE NOM=?");
             prepStatement.setString(1, name);
@@ -111,14 +115,14 @@ public class VilleDao {
 
                 return new Ville(id, codeVille, nomVille, population, idDepartement, idRegion);
             } else {
-                System.err.println("Aucune ville portant ce nom dans la base de données");
+                System.out.println("Aucune ville portant ce nom dans la base de données");
                 return null;
             }
         } catch (SQLException e){
             System.err.println("Erreur : impossible de recupérer la ville");
             return null;
         } finally {
-            closeDBAccess();
+            //closeDBAccess();
         }
     }
 
@@ -129,7 +133,7 @@ public class VilleDao {
     public void insert(Ville ville){
         try {
             if (extractByName(ville.getNom())==null){
-                connectToDB(); // je faits la connexion à la base ici car l'extractByName ci dessus ferme la connection une fois qu'il a fini
+                //connectToDB(); // je faits la connexion à la base ici car l'extractByName ci dessus ferme la connection une fois qu'il a fini
                 prepStatement = connection.prepareStatement("INSERT INTO ville (CODE_VILLE, NOM, POPULATION, ID_DEPARTEMENT, ID_REGION) values (?, ?, ?, ?, ?);");
                 prepStatement.setString(1, ville.getCodeVille());
                 prepStatement.setString(2, ville.getNom());
@@ -139,13 +143,13 @@ public class VilleDao {
                 prepStatement.executeUpdate();
             }
             else{
-                System.err.println("Erreur : cette ville existe déja dans la base de données");
+                System.out.println("Warning : cette ville existe déja dans la base de données");
             }
 
         }catch (SQLException e) {
             System.err.println("Erreur : l'insertion de ville a échoué");
         } finally {
-            closeDBAccess();
+            //closeDBAccess();
         }
     }
 
@@ -155,7 +159,7 @@ public class VilleDao {
      * @param newNom : nouveau nom
      */
     public void update(String oldNom, String newNom){
-        connectToDB();
+        //connectToDB();
         int res = 0;
         try {
             prepStatement = connection.prepareStatement("UPDATE ville SET NOM=? WHERE NOM=?");
@@ -170,7 +174,7 @@ public class VilleDao {
         } catch (Exception e){
             System.err.println(e.getMessage());
         } finally {
-            closeDBAccess();
+            //closeDBAccess();
         }
     }
 
@@ -179,7 +183,7 @@ public class VilleDao {
      * @param ville
      */
     public void delete(Ville ville){
-        connectToDB();
+        //connectToDB();
         int res = 0;
         try {
             prepStatement = connection.prepareStatement("DELETE FROM ville WHERE CODE_VILLE=?");
@@ -195,7 +199,7 @@ public class VilleDao {
             System.err.println(e.getMessage());
         }
         finally {
-            closeDBAccess();
+            //closeDBAccess();
         }
     }
 }

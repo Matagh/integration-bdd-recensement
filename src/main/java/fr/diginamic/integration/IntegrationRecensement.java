@@ -14,20 +14,29 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe executable de l'application, qui réalise l'integration en base
+ * des données du fichier recensement.csv
+ */
 public class IntegrationRecensement {
     public static void main(String[] args) {
+        // On lis le fichier recensement et on stocke chacune de ses lignes
         List<String> lignesFichier = readFile();
-        //TODO : instancier les classes DAO ici puis potentiellement
+
+        // On instancie les classes DAO
         RegionDao daoRegion = new RegionDao();
         DepartementDao daoDepartement = new DepartementDao();
         VilleDao daoVille = new VilleDao();
 
+        // On effectue l'insertion des données pour chaque ligne
         for (String line : lignesFichier) {
             insertEntry(line, daoRegion, daoDepartement, daoVille);
         }
 
+        // On ferme les accès à la base qui on été ouverts lors de l'instanciation des classes DAO (dans leur constructeur)
         daoRegion.closeDBAccess();
         daoDepartement.closeDBAccess();
+        daoVille.closeDBAccess();
     }
 
     /**
@@ -76,11 +85,8 @@ public class IntegrationRecensement {
         daoDepartement.insert(departement);
         Departement departementBase = daoDepartement.extractByCode(codeDepartement); // permet de récupérer une Région avec l'id de la base (qui est auto-incrémenté)
 
-        /*
         // 3- Insertion dans la table ville
         Ville ville = new Ville(0, codeCommune, nomCommune, populationTotale, departementBase.getId(), regionBase.getId());
         daoVille.insert(ville);
-
-         */
     }
 }
