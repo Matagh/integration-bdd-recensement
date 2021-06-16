@@ -19,12 +19,13 @@ public class RegionDao {
     ResultSet cursor = null;
 
     public RegionDao() {
+        connectToDB();
     }
 
     /**
      * Methode qui établit une connection avec la database
      */
-    private void connectToDB(){
+    public void connectToDB(){
         try {
             DriverManager.registerDriver(new Driver());
 
@@ -47,7 +48,7 @@ public class RegionDao {
     /**
      * Methode pour fermer les ressources d'accès à la database
      */
-    private void closeDBAccess(){
+    public void closeDBAccess(){
         try {
             if (connection!=null)
                 connection.close(); // Indispensable pour certaines BDD. Exemple : Oracle
@@ -67,7 +68,7 @@ public class RegionDao {
      */
     public List<Region> extract(){
         List<Region> regionList = new ArrayList<>();
-        connectToDB();
+        //connectToDB();
         try {
             prepStatement = connection.prepareStatement("SELECT * FROM region");
             cursor = prepStatement.executeQuery();
@@ -83,7 +84,7 @@ public class RegionDao {
             System.err.println("Erreur : impossible de recupérer la liste des departements");
             return null;
         } finally {
-            closeDBAccess();
+            //closeDBAccess();
         }
     }
 
@@ -93,7 +94,7 @@ public class RegionDao {
      * @return
      */
     public Region extractByName(String name){
-        connectToDB();
+        //connectToDB();
         try {
             prepStatement = connection.prepareStatement("SELECT * FROM region WHERE NOM=?");
             prepStatement.setString(1, name);
@@ -112,7 +113,7 @@ public class RegionDao {
             System.err.println("Erreur : impossible de recupérer la région");
             return null;
         } finally {
-            closeDBAccess();
+            //closeDBAccess();
         }
     }
 
@@ -123,7 +124,7 @@ public class RegionDao {
     public void insert(Region region){
         try {
             if (extractByName(region.getNom()) == null){ //i.e. : n'existe pas encore
-                connectToDB(); // je faits la connexion à la base ici car l'extractByName ci dessus ferme la connection une fois qu'il a fini
+                //connectToDB(); // je faits la connexion à la base ici car l'extractByName ci dessus ferme la connection une fois qu'il a fini
                 prepStatement = connection.prepareStatement("INSERT INTO region (CODE, NOM) VALUES (?, ?);");
                 prepStatement.setString(1, region.getCode());
                 prepStatement.setString(2, region.getNom());
@@ -138,7 +139,7 @@ public class RegionDao {
             System.err.println("Erreur : l'insertion de la région a échoué");
             e.printStackTrace();;
         } finally {
-            closeDBAccess();
+            //closeDBAccess();
         }
     }
 
@@ -150,7 +151,7 @@ public class RegionDao {
         connectToDB();
         int res=0;
         try {
-            prepStatement = connection.prepareStatement("DELETE FROM regio, WHERE CODE=? AND NOM=?");
+            prepStatement = connection.prepareStatement("DELETE FROM region WHERE CODE=? AND NOM=?");
             prepStatement.setString(1, region.getCode());
             prepStatement.setString(2, region.getNom());
             res = prepStatement.executeUpdate();

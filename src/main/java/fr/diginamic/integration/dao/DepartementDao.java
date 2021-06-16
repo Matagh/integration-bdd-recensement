@@ -16,6 +16,10 @@ public class DepartementDao {
     PreparedStatement prepStatement = null;
     ResultSet cursor = null;
 
+    public DepartementDao() {
+        connectToDB();
+    }
+
     /**
      * Methode qui établit une connection avec la database
      */
@@ -62,7 +66,7 @@ public class DepartementDao {
      */
     public List<Departement> extract(){
         List<Departement> departementList = new ArrayList<>();
-        connectToDB();
+        //connectToDB();
         try {
             prepStatement = connection.prepareStatement("SELECT * FROM departement");
             cursor = prepStatement.executeQuery();
@@ -78,7 +82,7 @@ public class DepartementDao {
             System.err.println("Erreur : impossible de recupérer la liste des departement");
             return null;
         } finally {
-            closeDBAccess();
+            //closeDBAccess();
         }
     }
 
@@ -88,7 +92,7 @@ public class DepartementDao {
      * @return
      */
     public Departement extractByCode(String code){
-        connectToDB();
+        //connectToDB();
         try {
             prepStatement = connection.prepareStatement("SELECT * FROM departement WHERE CODE=?");
             prepStatement.setString(1, code);
@@ -107,7 +111,7 @@ public class DepartementDao {
             System.err.println("Erreur : impossible de recupérer le departement");
             return null;
         } finally {
-            closeDBAccess();
+            //closeDBAccess();
         }
     }
 
@@ -118,7 +122,7 @@ public class DepartementDao {
     public void insert(Departement dpt){
         try {
             if (extractByCode(dpt.getCode())==null){
-                connectToDB(); // je faits la connexion à la base ici car l'extractByName ci dessus ferme la connection une fois qu'il a fini
+                //connectToDB(); // je faits la connexion à la base ici car l'extractByName ci dessus ferme la connection une fois qu'il a fini
                 prepStatement = connection.prepareStatement("INSERT INTO departement (CODE, POPULATION, ID_REGION) values (?, ?, ?);");
                 prepStatement.setString(1, dpt.getCode());
                 prepStatement.setInt(3, dpt.getIdRegion());
@@ -132,7 +136,7 @@ public class DepartementDao {
         }catch (SQLException e) {
             System.err.println("Erreur : l'insertion de departement a échoué");
         } finally {
-            closeDBAccess();
+            //closeDBAccess();
         }
     }
 
@@ -145,7 +149,7 @@ public class DepartementDao {
      * @param dpt : departement à supprimer
      */
     public void delete(Departement dpt){
-        connectToDB();
+        //connectToDB();
         int res=0;
         try {
             prepStatement = connection.prepareStatement("DELETE FROM departement WHERE CODE=?");
@@ -161,7 +165,7 @@ public class DepartementDao {
             System.err.println(e.getMessage());
         }
         finally {
-            closeDBAccess();
+            //closeDBAccess();
         }
     }
 

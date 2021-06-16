@@ -17,10 +17,16 @@ import java.util.List;
 public class IntegrationRecensement {
     public static void main(String[] args) {
         List<String> lignesFichier = readFile();
-        //insertEntry(lignesFichier.get(0));
-        for (int i=0; i < 10000; i++) {
-            insertEntry(lignesFichier.get(i));
+        //TODO : instancier les classes DAO ici puis potentiellement
+        RegionDao daoRegion = new RegionDao();
+        DepartementDao daoDepartement = new DepartementDao();
+        VilleDao daoVille = new VilleDao();
+
+        for (String line : lignesFichier) {
+            insertEntry(line, daoRegion, daoDepartement, daoVille);
         }
+
+        daoRegion.closeDBAccess();
     }
 
     /**
@@ -48,7 +54,7 @@ public class IntegrationRecensement {
      * A partir d'une ligne du fichier recensement, insère les données adéquates en base
      * @param line
      */
-    private static void insertEntry(String line){
+    private static void insertEntry(String line, RegionDao daoRegion, DepartementDao daoDpt, VilleDao daoVille){
         // 1- Parsing de la ligne
         String[] morceaux = line.split(";");
         String codeRegion = morceaux[0];
@@ -60,9 +66,10 @@ public class IntegrationRecensement {
         int populationTotale = Integer.parseInt(population.replace(" ", "").trim());
 
         // 2- On instancie les classes DAO
-        RegionDao daoRegion = new RegionDao();
+        /*RegionDao daoRegion = new RegionDao();
         DepartementDao daoDepartement = new DepartementDao();
         VilleDao daoVille = new VilleDao();
+         */
 
         // 3- Insertion dans la table region
         Region region = new Region(0, codeRegion, nomRegion);
